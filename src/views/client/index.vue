@@ -56,6 +56,7 @@
           </template>
         </el-table-column>
       </el-table>
+      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="search_form.pageNum" :page-sizes="[2,20,50,100,200]" :page-size="search_form.limit" layout="total, sizes, prev, pager, next, jumper" :total="search_form.total"></el-pagination>
     </el-main>
 
     <!--添加客户-->
@@ -160,7 +161,7 @@
 </template>
 
 <script>
-  import { search_client, del_client, add_client, update_client } from "@/api/client"
+  import { search_client,hzSearch_client, del_client, add_client, update_client } from "@/api/client"
   import DataShowInput from "@/components/DataShowInput"
   import { date_format } from "@/utils/functions";
 
@@ -172,7 +173,9 @@
         data() {
             return {
                 search_form:{
-                    limit: 50,
+                    limit: 2,
+                    pageNum:1,
+                    total:0,
                     search: ''
                 },
                 table_data: [],
@@ -213,8 +216,11 @@
         methods: {
             search_client() {
                 this.loading = true;
-                search_client(this.search_form).then(res => {
-                        this.table_data = res.data;
+                console.log(this.search_form);
+                hzSearch_client(this.search_form).then(res => {
+                        this.table_data = res.data.data;
+                        this.search_form.total = res.data.totalElements;
+                        //this.search_form.pageNum =  res.data.totalPages;
                         this.loading = false;
                         this.update_mode = false;
                     }).catch(e => {
@@ -322,7 +328,18 @@
             },
             user_manage(id){
                 return "/#/customer/index?customerId=" + id
-            }
+            },
+            handleSizeChange(val) {
+              console.log(val);
+            this.search_form.pageSize = val;
+            this.search_client();
+            },
+            handleCurrentChange(val) {
+                //alert("当前页变了");
+                console.log(val);
+                this.search_form.pageNum = val;
+                this.search_client();
+            },
         },
         created(){
             this.search_client()

@@ -5,7 +5,10 @@ import { getToken } from '@/utils/auth'
 
 // create an axios instance
 const service = axios.create({
-  // baseURL: "http://125.64.98.21:8010/",
+  // baseURL: "http://125.64.98.21:8011/", // 线
+  // baseURL: "http://192.168.3.15:8010/", // 罗
+  //baseURL: "http://192.168.3.40:8011/", // 黄
+  // baseURL: "http://192.168.3.31:8010/", // 谢
   baseURL: "http://localhost:8010/",
   // baseURL: "/",
   timeout: 0, // request timeout
@@ -29,15 +32,14 @@ service.interceptors.request.use(
 // response interceptor
 service.interceptors.response.use(
   /**
-   * If you want to get http information such as headers or status
+   * 如果您想获取http信息，如头或状态
    * Please return  response => response
   */
 
   /**
-   * Determine the request status by custom code
-   * Here is just an example
-   * You can also judge the status by HTTP Status Code
-   */
+   *通过自定义代码确定请求状态
+   *您还可以通过HTTP状态代码来判断状态
+  */
   response => {
     let res = response.data;
     if (response.status !== 200) {
@@ -49,16 +51,6 @@ service.interceptors.response.use(
       return Promise.reject(new Error(res.message || 'Error'))
     } else {
       return res
-      // const res = response.data
-      // if (res.success) {
-      //   return res
-      // }else {
-      //   Message({
-      //     message: res.message,
-      //     type: 'info',
-      //     duration: 5 * 1000
-      //   })
-      // }
     }
   },
   error => {

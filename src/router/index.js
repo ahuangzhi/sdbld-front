@@ -91,64 +91,64 @@ export const constantRoutes = [
       }
     ]
   },
-  {
-    path: '/block',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: '钱包管理',
-        component: () => import('@/views/block/index'),
-        meta: { title: '钱包管理', icon: 'blockHeight' }
-      }
-    ]
-  },
-  {
-    path: '/map',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: '位置管理',
-        component: () => import('@/views/map/index'),
-        meta: { title: '位置管理', icon: 'map' }
-      }
-    ]
-  },
-  {
-    path: '/customer',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: '顾客管理',
-        component: () => import('@/views/customer/index'),
-      }
-    ]
-  },
-  {
-    path: '/tenant',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: '租户管理',
-        component: () => import('@/views/tenant/index'),
-        meta: { title: '租户管理', icon: 'tenant' }
-      }
-    ]
-  },
-  {
-    path: '/tenantAdmin',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: '租户管理员管理',
-        component: () => import('@/views/tenantAdmin/index'),
-      }
-    ]
-  },
+  // {
+  //   path: '/block',
+  //   component: Layout,
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       name: '钱包管理',
+  //       component: () => import('@/views/block/index'),
+  //       meta: { title: '钱包管理', icon: 'blockHeight' }
+  //     }
+  //   ]
+  // },
+  // {
+  //   path: '/map',
+  //   component: Layout,
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       name: '位置管理',
+  //       component: () => import('@/views/map/index'),
+  //       meta: { title: '位置管理', icon: 'map' }
+  //     }
+  //   ]
+  // },
+  // {
+  //   path: '/customer',
+  //   component: Layout,
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       name: '顾客管理',
+  //       component: () => import('@/views/customer/index'),
+  //     }
+  //   ]
+  // },
+  // {
+  //   path: '/tenant',
+  //   component: Layout,
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       name: '租户管理',
+  //       component: () => import('@/views/tenant/index'),
+  //       meta: { title: '租户管理', icon: 'tenant' }
+  //     }
+  //   ]
+  // },
+  // {
+  //   path: '/tenantAdmin',
+  //   component: Layout,
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       name: '租户管理员管理',
+  //       component: () => import('@/views/tenantAdmin/index'),
+  //     }
+  //   ]
+  // },
   // {
   //   path: '/transaction',
   //   component: Layout,
@@ -161,30 +161,30 @@ export const constantRoutes = [
   //     }
   //   ]
   // },
-  {
-    path: '/maintain',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: '电桩维护',
-        component: () => import('@/views/maintain/index'),
-        meta: { title: '电桩维护', icon: 'maintain' }
-      }
-    ]
-  },
-  {
-    path: '/price',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: '资费维护',
-        component: () => import('@/views/price/index'),
-        meta: { title: '资费维护', icon: 'price' }
-      }
-    ]
-  },
+  // {
+  //   path: '/maintain',
+  //   component: Layout,
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       name: '电桩维护',
+  //       component: () => import('@/views/maintain/index'),
+  //       meta: { title: '电桩维护', icon: 'maintain' }
+  //     }
+  //   ]
+  // },
+  // {
+  //   path: '/price',
+  //   component: Layout,
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       name: '资费维护',
+  //       component: () => import('@/views/price/index'),
+  //       meta: { title: '资费维护', icon: 'price' }
+  //     }
+  //   ]
+  // },
   /*{
     path: '/orderCharge',
     component: Layout,
@@ -209,41 +209,41 @@ export const constantRoutes = [
       }
     ]
   },*/
-  {
-    path: '/transfer',
-    component: Layout,
-    children: [
-      {
-        path: 'transfer',
-        name: '资金归集',
-        component: () => import('@/views/transfer/transfer'),
-        meta: { title: '资金归集', icon: 'collect' }
-      }
-    ]
-  },
-  {
-    path: '/traceability',
-    component: Layout,
-    children: [
-      {
-        path: 'traceability',
-        name: '资源管理',
-        component: () => import('@/views/traceability/traceability'),
-        meta: { title: '资源管理', icon: 'traceability' }
-      }
-    ]
-  }, {
-    path: '/orderCharge',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: '分段电价表',
-        component: () => import('@/views/basics_sectional_tariff/index'),
-        meta: { title: '分段电价表', icon: 'el-icon-s-management' }
-      }
-    ]
-  },
+  // {
+  //   path: '/transfer',
+  //   component: Layout,
+  //   children: [
+  //     {
+  //       path: 'transfer',
+  //       name: '资金归集',
+  //       component: () => import('@/views/transfer/transfer'),
+  //       meta: { title: '资金归集', icon: 'collect' }
+  //     }
+  //   ]
+  // },
+  // {
+  //   path: '/traceability',
+  //   component: Layout,
+  //   children: [
+  //     {
+  //       path: 'traceability',
+  //       name: '资源管理',
+  //       component: () => import('@/views/traceability/traceability'),
+  //       meta: { title: '资源管理', icon: 'traceability' }
+  //     }
+  //   ]
+  // }, {
+  //   path: '/orderCharge',
+  //   component: Layout,
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       name: '分段电价表',
+  //       component: () => import('@/views/basics_sectional_tariff/index'),
+  //       meta: { title: '分段电价表', icon: 'el-icon-s-management' }
+  //     }
+  //   ]
+  // },
 
 
   // 404 page must be placed at the end !!!
