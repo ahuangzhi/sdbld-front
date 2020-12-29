@@ -9,6 +9,13 @@ export function search_block (data) {
   })
 }
 
+export function hzGetLog (data) {
+  return request({
+    url: prefix + 'hzGetLog.json?limit=' + data.limit + '&search=' + data.search + '&pageNum=' + data.pageNum + '&idOffset=' + data.idOffset + '&textOffset=' + data.textOffset,
+    method: 'get',
+  })
+}
+
 export function search_block_hash (chipId, pageNum, pageSize) {
   return request({
     url: prefix + 'searchBlockHash.json?pageSize=' + pageSize + '&chipId=' + chipId + '&pageNum=' + pageNum,

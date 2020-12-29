@@ -91,18 +91,18 @@ export const constantRoutes = [
       }
     ]
   },
-  // {
-  //   path: '/block',
-  //   component: Layout,
-  //   children: [
-  //     {
-  //       path: 'index',
-  //       name: '钱包管理',
-  //       component: () => import('@/views/block/index'),
-  //       meta: { title: '钱包管理', icon: 'blockHeight' }
-  //     }
-  //   ]
-  // },
+  {
+    path: '/block',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: '日志',
+        component: () => import('@/views/block/index'),
+        meta: { title: '日志', icon: 'blockHeight' }
+      }
+    ]
+  },
   // {
   //   path: '/map',
   //   component: Layout,

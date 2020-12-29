@@ -5,7 +5,7 @@ import { getToken } from '@/utils/auth'
 
 // create an axios instance
 const service = axios.create({
-  // baseURL: "http://125.64.98.21:8011/", // 线
+  // baseURL: "http://124.128.148.108:8013/", // 线
   // baseURL: "http://192.168.3.15:8010/", // 罗
   //baseURL: "http://192.168.3.40:8011/", // 黄
   // baseURL: "http://192.168.3.31:8010/", // 谢

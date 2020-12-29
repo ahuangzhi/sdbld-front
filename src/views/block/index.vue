@@ -7,11 +7,11 @@
                     <el-row :gutter="20">
                         <el-col :span="10">
                             <div>
-                                <el-input class="search_input" placeholder="请输入设备信息" v-model="search.search" clearable></el-input>
+                                <el-input class="search_input" placeholder="查找日志" v-model="search.search" clearable></el-input>
                             </div>
                         </el-col>
                         <el-col :span="1.5">
-                            <el-button class="spacing20" type="primary" @click="search_block_query" icon="el-icon-search" round>设备搜索</el-button>
+                            <el-button class="spacing20" type="primary" @click="search_block_query" icon="el-icon-search" round>查找日志</el-button>
                         </el-col>
                     </el-row>
                 </div>
@@ -21,18 +21,21 @@
     <el-main>
         <!--设备列表-->
         <el-table :data="table_data" style="width: 100%">
-            <el-table-column label="设备名称" prop="chipId"></el-table-column>
-            <el-table-column label="钱包地址" prop="deviceWallet" min-width="150"></el-table-column>
-            <el-table-column label="钱包余额" prop="deviceMoney"></el-table-column>
+            <el-table-column label="时间戳" prop="createdTime" :formatter="formatDate"></el-table-column>
+            <el-table-column label="实体类型" prop="entityId.entityType" :formatter="formatEntityType"></el-table-column>
+            <el-table-column label="实体名称" prop="entityName"></el-table-column>
+            <el-table-column label="用户" prop="userName"></el-table-column>
+            <el-table-column label="类型" prop="actionType"></el-table-column>
+            <el-table-column label="状态" prop="actionStatus" min-width="150" :formatter="formatActionStatus"></el-table-column>
             <el-table-column label="操作">
                 <template slot-scope="scope">
-                    <el-button class="round_button" @click="history_transfer(scope.row)" title="查看历史转账记录">
+                    <el-button class="round_button" @click="history_transfer(scope.row)" title="详情">
                         <svg-icon class="bld_icon" icon-class="history_transfer" class-name="card-panel-icon" />
                     </el-button>
                 </template>
             </el-table-column>
         </el-table>
-        <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="search.pageNum" :page-sizes="[10,20,50,100,200]" :page-size="search.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="search.total"></el-pagination>
+        <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="search.pageNum" :page-sizes="[10,20,50,100,200]" :page-size="search.limit" layout="total, sizes, prev, pager, next, jumper" :total="search.total"></el-pagination>
 
     </el-main>
 
@@ -66,6 +69,7 @@
 <script>
 import {
     search_block,
+    hzGetLog,
     search_block_hash,
     block_hash_info,
     block_info
@@ -81,8 +85,12 @@ export default {
         return {
             search: {
                 pageNum: 1,
-                pageSize: 10,
+                limit: 10,
                 search: '',
+                //对应的是结束时间
+                textOffset:'1609225430185',
+                //对应的是开始时间
+                idOffset:'1609139030185',
                 total: 0,
             },
             search2: {
@@ -105,12 +113,15 @@ export default {
         }
     },
     methods: {
-        search_block() {
+        hzGetLog() {
             this.loading = true;
-            search_block(this.search).then(res => {
+            hzGetLog(this.search).then(res => {
                 if (res.success) {
-                    this.table_data = res.data;
-                    this.search.total = res.total;
+                    // let time = parseInt(data.createdTime, 16);
+                    // let date = date_format(time * 1000);
+                    // console.log(date);
+                    this.table_data = res.data.data;
+                    this.search.total = res.data.totalElements;
                 } else {
                     this.$message({
                         type: 'info',
@@ -124,7 +135,7 @@ export default {
         },
         search_block_query() {
             this.search.pageNum = 1;
-            this.search_block();
+            this.hzGetLog();
         },
         history_transfer(row) {
             this.chipId = row.chipId;
@@ -225,13 +236,13 @@ export default {
             })
         },
         handleSizeChange(val) {
-            this.search.pageSize = val;
-            this.search_block();
+            this.search.limit = val;
+            this.hzGetLog();
         },
         handleCurrentChange(val) {
             //alert("当前页变了");
             this.search.pageNum = val;
-            this.search_block();
+            this.hzGetLog();
         },
         handleSizeChange2(val) {
             this.search2.pageSize = val;
@@ -244,10 +255,51 @@ export default {
             let j1 = new Object();
             j1.chipId = this.chipId;
             this.history_transfer(j1);
-        }
+        },
+        formatDate(row, column) {
+              let date = new Date(row.createdTime);
+              let Y = date.getFullYear() + '-';
+              let M = date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) + '-' : date.getMonth() + 1 + '-';
+              let D = date.getDate() < 10 ? '0' + date.getDate() + ' ' : date.getDate() + ' ';
+              let h = date.getHours() < 10 ? '0' + date.getHours() + ':' : date.getHours() + ':';
+              let m = date.getMinutes()  < 10 ? '0' + date.getMinutes() + ':' : date.getMinutes() + ':';
+              let s = date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds();
+              return Y + M + D + h + m + s;
+          },
+          formatEntityType(row, column){
+              switch(row.entityId.entityType){
+                case 'USER':
+                  return '用户'
+                case 'ASSET':
+                  return '资产'
+                case 'CUSTOMER':
+                  return '客户'
+                case 'DEVICE':
+                  return '设备'
+                default:
+                  return '其他'
+	            }
+          },
+          formatActionStatus(row, column){
+            console.log(row.actionType);
+            switch(row.actionType){
+                case 'DELETED':
+                  return '删除'
+                case 'LOGOUT':
+                  return '退出'
+                case 'ADDED':
+                  return '添加'
+                case 'UPDATED':
+                  return '修改'
+                case 'ASSIGNED_TO_CUSTOMER':
+                  return '分配给客户'
+                default:
+                  return '其他'
+	            }
+          }
     },
     created() {
-        this.search_block();
+        this.hzGetLog();
     }
 }
 </script>
