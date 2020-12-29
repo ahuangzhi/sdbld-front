@@ -64,6 +64,7 @@
                 </template>
             </el-table-column>
         </el-table>
+        <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="search_form.pageNum" :page-sizes="[10,20,50,100,200]" :page-size="search_form.limit" layout="total, sizes, prev, pager, next, jumper" :total="search_form.total"></el-pagination>
     </el-main>
 
     <!--添加资产-->
@@ -155,7 +156,8 @@
 import DataShowInput from "@/components/DataShowInput"
 import {
     search_client_ids,
-    search_client
+    search_client,
+    hzSearch_client,
 } from "@/api/client"
 import {
     add_asset,
@@ -165,7 +167,8 @@ import {
     public_asset,
     dis_asset,
     delDis_asset,
-    asset_types
+    asset_types,
+    hzGetAssetInfos,
 } from "@/api/asset"
 
 export default {
@@ -178,7 +181,9 @@ export default {
             isCustomer: false,
             customer_id: '',
             search_form: {
-                limit: 50,
+                limit: 10,
+                pageNum:1,
+                total:0,
                 search: '',
                 id: ''
             },
@@ -229,10 +234,21 @@ export default {
         }
     },
     methods: {
+      handleSizeChange(val) {
+              console.log(val);
+            this.search_form.limit = val;
+            this.search_assets();
+            },
+            handleCurrentChange(val) {
+                //alert("当前页变了");
+                console.log(val);
+                this.search_form.pageNum = val;
+                this.search_assets();
+            },
         search_assets() {
             search_asset(this.search_form).then(res => {
                 if (res.success) {
-                    let data = res.data;
+                    let data = res.data.data;
                     for (let i = 0; i < data.length; i++) {
                         let d = data[i];
                         let cId = d.customerId.id;
@@ -270,6 +286,7 @@ export default {
                         }
                     });
                     this.assets_distribution_drawer = false;
+                    this.search_form.total = res.data.totalElements;
                     this.loading = false
                 }
             })
@@ -336,6 +353,7 @@ export default {
             if (this.customer_id === '' || this.customer_id == null) {
                 asset_types().then(res => {
                     if (res.success) {
+                      console.log(res);
                         this.assets_types = res.data;
                         if (f) {
                             this.add_assets_drawer = true;
@@ -384,9 +402,9 @@ export default {
             })
         },
         distribution_button(id) {
-            search_client(this.search_form).then(res => {
+            hzSearch_client(this.search_form).then(res => {
                 if (res.success) {
-                    this.customer_list = res.data;
+                    this.customer_list = res.data.data;
                     this.assets_distribution_data.assets_id = id;
                     this.assets_distribution_drawer = true;
                 } else {

@@ -115,17 +115,17 @@ export const constantRoutes = [
   //     }
   //   ]
   // },
-  // {
-  //   path: '/customer',
-  //   component: Layout,
-  //   children: [
-  //     {
-  //       path: 'index',
-  //       name: '顾客管理',
-  //       component: () => import('@/views/customer/index'),
-  //     }
-  //   ]
-  // },
+  {
+    path: '/customer',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: '顾客管理',
+        component: () => import('@/views/customer/index'),
+      }
+    ]
+  },
   // {
   //   path: '/tenant',
   //   component: Layout,

@@ -56,7 +56,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="search_form.pageNum" :page-sizes="[2,20,50,100,200]" :page-size="search_form.limit" layout="total, sizes, prev, pager, next, jumper" :total="search_form.total"></el-pagination>
+      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="search_form.pageNum" :page-sizes="[10,20,50,100,200]" :page-size="search_form.limit" layout="total, sizes, prev, pager, next, jumper" :total="search_form.total"></el-pagination>
     </el-main>
 
     <!--添加客户-->
@@ -173,7 +173,7 @@
         data() {
             return {
                 search_form:{
-                    limit: 2,
+                    limit: 10,
                     pageNum:1,
                     total:0,
                     search: ''

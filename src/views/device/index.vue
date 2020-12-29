@@ -64,7 +64,7 @@
                 </template>
             </el-table-column>
         </el-table>
-
+<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="search.pageNum" :page-sizes="[10,20,50,100,200]" :page-size="search.limit" layout="total, sizes, prev, pager, next, jumper" :total="search.total"></el-pagination>
     </el-main>
 
     <!--添加设备-->
@@ -312,7 +312,8 @@ import {
 } from "@/api/device"
 import {
     search_client_ids,
-    search_client
+    search_client,
+    hzSearch_client,
 } from "@/api/client"
 import DataShowInput from "@/components/DataShowInput"
 import {
@@ -340,7 +341,7 @@ export default {
             customerId: '',
             search: {
                 pageNum: 1,
-                pageSize: 10,
+                limit: 10,
                 search: '',
                 total: 0,
                 id: '',
@@ -438,6 +439,17 @@ export default {
         }
     },
     methods: {
+      handleSizeChange(val) {
+              console.log(val);
+            this.search.limit = val;
+            this.search_device();
+            },
+            handleCurrentChange(val) {
+                //alert("当前页变了");
+                console.log(val);
+                this.search.pageNum = val;
+                this.search_device();
+            },
         //时间格式
         lastUpdateTsdataformat(val) {
 
@@ -461,48 +473,52 @@ export default {
             this.search.textOffset = ""
             search_device(this.search).then(res => {
                 if (res.success) {
-                    let data = res.data;
-                    for (let i = 0; i < data.length; i++) {
-                        let cId = data[i].customerId.id;
-                        let c = this.customer_data[cId];
-                        if (c) {
-                            data[i].cName = c
-                        } else {
-                            data[i].cName = '';
-                            this.customer_data[cId] = false
+                  console.log(res);
+                    let data = res.data.data;
+                    if(data.length > 0){
+                      for (let i = 0; i < data.length; i++) {
+                          let cId = data[i].customerId.id;
+                          let c = this.customer_data[cId];
+                          if (c) {
+                              data[i].cName = c
+                          } else {
+                              data[i].cName = '';
+                              this.customer_data[cId] = false
+                          }
+                      }
+                      this.table_data = data;
+                      let ids = '';
+                      for (let k in this.customer_data) {
+                          if (!this.customer_data[k]) {
+                              ids = ids + "," + k
+                          }
+                      }
+                      if (ids !== '') {
+                          search_client_ids(ids).then(res => {
+                              if (res.success && res.data != null) {
+                                  for (let k in res.data) {
+                                      this.customer_data[k] = res.data[k]
+                                  }
+                                  for (let i = 0; i < data.length; i++) {
+                                      let cId = data[i].customerId.id;
+                                      let c = this.customer_data[cId];
+                                      if (c) {
+                                          data[i].cName = c
+                                      } else {
+                                          data[i].cName = '';
+                                          this.customer_data[cId] = false
+                                      }
+                                  }
+                                  this.table_data = data;
+                              }
+                          });
                         }
-                    }
-                    this.table_data = data;
-                    let ids = '';
-                    for (let k in this.customer_data) {
-                        if (!this.customer_data[k]) {
-                            ids = ids + "," + k
-                        }
-                    }
-                    if (ids !== '') {
-                        search_client_ids(ids).then(res => {
-                            if (res.success && res.data != null) {
-                                for (let k in res.data) {
-                                    this.customer_data[k] = res.data[k]
-                                }
-                                for (let i = 0; i < data.length; i++) {
-                                    let cId = data[i].customerId.id;
-                                    let c = this.customer_data[cId];
-                                    if (c) {
-                                        data[i].cName = c
-                                    } else {
-                                        data[i].cName = '';
-                                        this.customer_data[cId] = false
-                                    }
-                                }
-                                this.table_data = data;
-                            }
-                        });
                     }
                     this.add_device_drawer = false;
                     this.device_distribution_drawer = false;
-                    this.search.textOffset = res.textOffset
-                    this.search.idOffset = res.idOffset
+                    this.search.textOffset = res.data.textOffset;
+                    this.search.idOffset = res.data.idOffset;
+                    this.search.total = res.data.totalElements;
                 } else {
                     this.$message({
                         type: 'warning',
@@ -513,6 +529,7 @@ export default {
             })
         },
         get_types(f) {
+          console.log(this.customerId)
             if (this.customerId == null || this.customerId === '') {
                 device_types().then(res => {
                     if (res.success) {
@@ -650,12 +667,14 @@ export default {
             })
         },
         distribution_button(id) {
-            search_client({
+            hzSearch_client({
                 'limit': 50,
+                'pageNum':1,
                 'search': ''
             }).then(res => {
                 if (res.success) {
-                    let data = res.data;
+                  console.log(res);
+                    let data = res.data.data;
                     this.customer_list = [];
                     for (let i = 0; i < data.length; i++) {
                         this.customer_list[this.customer_list.length] = {

@@ -38,6 +38,7 @@
           </template>
         </el-table-column>
       </el-table>
+      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="search.pageNum" :page-sizes="[10,20,50,100,200]" :page-size="search.limit" layout="total, sizes, prev, pager, next, jumper" :total="search.total"></el-pagination>
     </el-main>
 
     <!--添加用户-->
@@ -126,7 +127,7 @@
 </template>
 
 <script>
-    import { add_customer, del_customer, update_customer, modify_status, search_customer, activation_url } from "@/api/customer"
+    import { add_customer, del_customer, update_customer, modify_status, search_customer,hzSearch_customer, activation_url } from "@/api/customer"
     import DataShowInput from "@/components/DataShowInput"
     import { date_format } from "@/utils/functions";
 
@@ -144,9 +145,11 @@
             return {
                 customerId: '',
                 search: {
-                    limit: 50,
+                    limit: 10,
+                    pageNum:1,
                     search: '',
-                    id: ''
+                    id: '',
+                    total:0,
                 },
                 table_data: [],
                 add_user_data: {
@@ -174,12 +177,25 @@
             }
         },
         methods: {
+          handleSizeChange(val) {
+              console.log(val);
+            this.search.pageSize = val;
+            this.search_user();
+            },
+            handleCurrentChange(val) {
+                //alert("当前页变了");
+                console.log(val);
+                this.search.pageNum = val;
+                this.search_user();
+            },
             search_user() {
                 this.loading = true;
                 let thi = this;
-                search_customer(this.search).then((res)=>{
+                hzSearch_customer(this.search).then((res)=>{
                     if(res.success){
-                        thi.table_data = res.data;
+                        thi.table_data = res.data.data;
+                        console.log(res);
+                        thi.search.total = res.data.totalElements;
                         this.add_user_drawer = false;
                     }else {
                         this.$message({
@@ -326,7 +342,9 @@
                 })
             }
         },
+        
         created(){
+          console.log("ddd");
             let url = window.location.href;
             let number = url.lastIndexOf("customerId=");
             if (number < 1) {
