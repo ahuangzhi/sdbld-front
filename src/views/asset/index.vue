@@ -246,6 +246,7 @@ export default {
                 this.search_assets();
             },
         search_assets() {
+          this.loading = true;
             search_asset(this.search_form).then(res => {
                 if (res.success) {
                     let data = res.data.data;
@@ -289,6 +290,8 @@ export default {
                     this.search_form.total = res.data.totalElements;
                     this.loading = false
                 }
+            }).catch(() => {
+                this.loading = false;
             })
         },
         assets_info(row) {

@@ -11,7 +11,7 @@
                 </div>
               </el-col>
               <el-col :span="1.5">
-                <el-button class="spacing20" type="primary" @click="search_user" icon="el-icon-search" round>用户搜索</el-button>
+                <el-button class="spacing20" type="primary" @click="search_user_query" icon="el-icon-search" round>用户搜索</el-button>
               </el-col>
               <el-col :span="1.5">
                 <el-button round @click="add_user_drawer = true" icon="el-icon-plus" class="spacing20">添加新用户</el-button>
@@ -206,6 +206,10 @@
                     this.loading = false
                 })
             },
+            search_user_query() {
+            this.search.pageNum = 1;
+            this.search_user();
+        },
             info_user(row, index) {
                 this.user_status(row);
                 this.show_index = index;

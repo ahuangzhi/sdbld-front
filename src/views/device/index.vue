@@ -23,10 +23,14 @@
     </el-header>
     <el-main>
         <!--设备列表-->
-        <el-table :data="table_data" style="width: 100%">
-            <el-table-column label="设备名称" prop="name"></el-table-column>
-            <el-table-column label="拥有人" prop="cName"></el-table-column>
-            <el-table-column label="设备ID" prop="id.id"></el-table-column>
+        <el-table :data="table_data" style="width: 100%" @sort-change='sortthiscolumn'>
+          <el-table-column label="创建时间" prop="createdTime" :formatter="formatDate" sortable="custom"></el-table-column>
+            <el-table-column label="名称" prop="name"></el-table-column>
+            <el-table-column label="设备类型" prop="type"></el-table-column>
+            <el-table-column label="标签" prop="label"></el-table-column>
+            <el-table-column label="拥有人" prop="customerTitle"></el-table-column>
+            <el-table-column label="公开" prop="customerIsPublic"></el-table-column>
+            <el-table-column label="是网关"></el-table-column>
             <el-table-column label="操作">
                 <template slot-scope="scope">
                     <el-button class="round_button" @click="info_device(scope.row)" title="详细信息">
@@ -64,7 +68,7 @@
                 </template>
             </el-table-column>
         </el-table>
-<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="search.pageNum" :page-sizes="[10,20,50,100,200]" :page-size="search.limit" layout="total, sizes, prev, pager, next, jumper" :total="search.total"></el-pagination>
+<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="search.page" :page-sizes="[10,20,50,100,200]" :page-size="search.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="search.total"></el-pagination>
     </el-main>
 
     <!--添加设备-->
@@ -340,13 +344,14 @@ export default {
             isCustomer: false,
             customerId: '',
             search: {
-                pageNum: 1,
-                limit: 10,
+                page: 1,
+                pageSize: 10,
                 search: '',
                 total: 0,
-                id: '',
-                idOffset: "",
-                textOffset: ""
+                customerId: '',
+                sortProperty: "createdTime",
+                sortOrder: "DESC",
+                type:'',
             },
             table_data: [],
             add_device_data: {
@@ -441,13 +446,13 @@ export default {
     methods: {
       handleSizeChange(val) {
               console.log(val);
-            this.search.limit = val;
+            this.search.pageSize = val;
             this.search_device();
             },
             handleCurrentChange(val) {
                 //alert("当前页变了");
                 console.log(val);
-                this.search.pageNum = val;
+                this.search.page = val;
                 this.search_device();
             },
         //时间格式
@@ -469,55 +474,53 @@ export default {
         },
         search_device() {
             this.loading = true;
-            this.search.idOffset = ""
-            this.search.textOffset = ""
             search_device(this.search).then(res => {
                 if (res.success) {
                   console.log(res);
-                    let data = res.data.data;
-                    if(data.length > 0){
-                      for (let i = 0; i < data.length; i++) {
-                          let cId = data[i].customerId.id;
-                          let c = this.customer_data[cId];
-                          if (c) {
-                              data[i].cName = c
-                          } else {
-                              data[i].cName = '';
-                              this.customer_data[cId] = false
-                          }
-                      }
-                      this.table_data = data;
-                      let ids = '';
-                      for (let k in this.customer_data) {
-                          if (!this.customer_data[k]) {
-                              ids = ids + "," + k
-                          }
-                      }
-                      if (ids !== '') {
-                          search_client_ids(ids).then(res => {
-                              if (res.success && res.data != null) {
-                                  for (let k in res.data) {
-                                      this.customer_data[k] = res.data[k]
-                                  }
-                                  for (let i = 0; i < data.length; i++) {
-                                      let cId = data[i].customerId.id;
-                                      let c = this.customer_data[cId];
-                                      if (c) {
-                                          data[i].cName = c
-                                      } else {
-                                          data[i].cName = '';
-                                          this.customer_data[cId] = false
-                                      }
-                                  }
-                                  this.table_data = data;
-                              }
-                          });
-                        }
-                    }
-                    this.add_device_drawer = false;
-                    this.device_distribution_drawer = false;
-                    this.search.textOffset = res.data.textOffset;
-                    this.search.idOffset = res.data.idOffset;
+                    this.table_data = res.data.data;
+                    // if(data.length > 0){
+                    //   for (let i = 0; i < data.length; i++) {
+                    //       let cId = data[i].customerId.id;
+                    //       let c = this.customer_data[cId];
+                    //       if (c) {
+                    //           data[i].cName = c
+                    //       } else {
+                    //           data[i].cName = '';
+                    //           this.customer_data[cId] = false
+                    //       }
+                    //   }
+                    //   this.table_data = data;
+                    //   let ids = '';
+                    //   for (let k in this.customer_data) {
+                    //       if (!this.customer_data[k]) {
+                    //           ids = ids + "," + k
+                    //       }
+                    //   }
+                    //   if (ids !== '') {
+                    //       search_client_ids(ids).then(res => {
+                    //           if (res.success && res.data != null) {
+                    //               for (let k in res.data) {
+                    //                   this.customer_data[k] = res.data[k]
+                    //               }
+                    //               for (let i = 0; i < data.length; i++) {
+                    //                   let cId = data[i].customerId.id;
+                    //                   let c = this.customer_data[cId];
+                    //                   if (c) {
+                    //                       data[i].cName = c
+                    //                   } else {
+                    //                       data[i].cName = '';
+                    //                       this.customer_data[cId] = false
+                    //                   }
+                    //               }
+                    //               this.table_data = data;
+                    //           }
+                    //       });
+                    //     }
+                    // }
+                    // this.add_device_drawer = false;
+                    // this.device_distribution_drawer = false;
+                    // this.search.textOffset = res.data.textOffset;
+                    // this.search.idOffset = res.data.idOffset;
                     this.search.total = res.data.totalElements;
                 } else {
                     this.$message({
@@ -527,6 +530,32 @@ export default {
                 }
                 this.loading = false;
             })
+        },
+        search_device_query() {
+            this.search.page = 1;
+            this.search_device();
+        },
+        formatDate(row, column) {
+              let date = new Date(row.createdTime);
+              let Y = date.getFullYear() + '-';
+              let M = date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) + '-' : date.getMonth() + 1 + '-';
+              let D = date.getDate() < 10 ? '0' + date.getDate() + ' ' : date.getDate() + ' ';
+              let h = date.getHours() < 10 ? '0' + date.getHours() + ':' : date.getHours() + ':';
+              let m = date.getMinutes()  < 10 ? '0' + date.getMinutes() + ':' : date.getMinutes() + ':';
+              let s = date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds();
+              return Y + M + D + h + m + s;
+          },
+        sortthiscolumn (column) {   
+           //自定义排序      column参数为一个对象包含需要排序的属性和排序方法
+          if(column.prop == "createdTime" && column.order == "ascending"){
+              this.search.sortOrder = "ASC"
+              this.search.page = 1;
+                this.search_device();
+            }else if(column.prop == "createdTime" && column.order == "descending"){
+                    this.search.sortOrder = "DESC"
+              this.search.page = 1;
+                    this.search_device();
+          }
         },
         get_types(f) {
           console.log(this.customerId)
@@ -668,8 +697,8 @@ export default {
         },
         distribution_button(id) {
             hzSearch_client({
-                'limit': 50,
-                'pageNum':1,
+                'pageSize': 50,
+                'page':1,
                 'search': ''
             }).then(res => {
                 if (res.success) {
@@ -1274,8 +1303,8 @@ export default {
                             }
                             that.add_device_drawer = false;
                             that.device_distribution_drawer = false;
-                            that.search.textOffset = res.textOffset
-                            that.search.idOffset = res.idOffset
+                            // that.search.textOffset = res.textOffset
+                            // that.search.idOffset = res.idOffset
                             that.falg = 1
                             //console.log(data)
                         } else {

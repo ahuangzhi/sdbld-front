@@ -11,7 +11,8 @@ export function search_block (data) {
 
 export function hzGetLog (data) {
   return request({
-    url: prefix + 'hzGetLog.json?limit=' + data.limit + '&search=' + data.search + '&pageNum=' + data.pageNum + '&idOffset=' + data.idOffset + '&textOffset=' + data.textOffset,
+    url: prefix + 'hzGetLog.json?pageSize=' + data.pageSize + '&search=' + data.search + '&page=' + data.page +
+      '&startTime=' + data.startTime + '&endTime=' + data.endTime + '&sortOrder=' + data.sortOrder + '&sortProperty=' + data.sortProperty,
     method: 'get',
   })
 }

@@ -28,9 +28,9 @@ export function update_device (data) {
 
 export function search_device (data) {
   return request({
-    url: urlPrefix + 'hzSearchDeviceList.json',
-    method: 'post',
-    data
+    url: urlPrefix + 'hzSearchDeviceList.json?pageSize=' + data.pageSize + '&page=' + data.page + '&sortProperty=' + data.sortProperty +
+      '&sortOrder=' + data.sortOrder + '&type=' + data.type + '&search=' + data.search,
+    method: 'get',
   })
 }
 
