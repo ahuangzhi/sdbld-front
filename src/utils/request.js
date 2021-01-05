@@ -5,14 +5,14 @@ import { getToken } from '@/utils/auth'
 
 // create an axios instance
 const service = axios.create({
-  baseURL: "http://124.128.148.108:21019/", // 线
+  // baseURL: "http://124.128.148.108:21019/", // 线
   // baseURL: "http://125.64.98.21:8012/", // 罗
   //baseURL: "http://192.168.3.40:8011/", // 黄
-  // baseURL: "http://192.168.3.31:8010/", // 谢
+  baseURL: "http://192.168.4.20:8010/",
   // baseURL: "http://localhost:8010/",
   // baseURL: "/",
   timeout: 0, // request timeout
-  //保持sessionKey
+  //保持sessionKeyy
   withCredentials: true, // send cookies when cross-domain requests
   crossDomain: true
 })
